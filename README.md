@@ -65,6 +65,11 @@ python -m pip install -e .
 python -m pytest -q
 ```
 
+The GitHub Actions workflow runs the test suite and checks the stored
+certificate record on push and pull requests.  The full Arb interval
+certification can also be rerun from the GitHub Actions UI with the
+`full_certificate` workflow option.
+
 The included certification run uses Arb via `python-flint`, certified root
 enclosures for the factors of `Q(chi(t))`, and a panelwise upper bound for the
 log-plus integral.  The run has
@@ -83,7 +88,8 @@ The code also reproduces Doche's baseline construction from [Doc01b] as
 As a finite search check, the code exhausts square-free products with `Q1,Q2`
 required and optional factors `R0,R2,P1,...,P9`, subject to `deg(Q) <= 220`.
 This checks 2048 products and ranks the displayed denominator first on the LP
-screening grid.
+screening grid.  This should be viewed as a heuristic and finite-family check,
+not as a proof that the displayed denominator is globally optimal.
 
 ## Reference
 

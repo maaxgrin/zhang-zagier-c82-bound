@@ -1,0 +1,68 @@
+name: Verify
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      full_certificate:
+        description: "Run the full Arb interval certification"
+        required: false
+        default: false
+        type: boolean
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[test]"
+      - name: Run tests
+        run: python -m pytest -q
+
+  full-certificate:
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.full_certificate }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[test]"
+      - name: Run full Arb interval certification
+        run: |
+          python -m zzopt.certify_stub \
+            runs/qstar_targeted_refined.jsonl \
+            --top 1 \
+            --target 0.253635 \
+            --panels 262144 \
+            --precision 120 \
+            --out runs/ci_full_certificate.jsonl
+          python - <<'PY'
+          import json
+          from decimal import Decimal
+          from pathlib import Path
+
+          rec = json.loads(Path("runs/ci_full_certificate.jsonl").read_text().strip())
+          if rec.get("certified") is not True:
+              raise RuntimeError(rec)
+          if rec.get("failed_panels") != []:
+              raise RuntimeError(rec["failed_panels"])
+          if Decimal(str(rec["bound_upper"])) > Decimal("0.2536331090204145"):
+              raise RuntimeError(rec["bound_upper"])
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ci-full-certificate
+          path: runs/ci_full_certificate.jsonl
