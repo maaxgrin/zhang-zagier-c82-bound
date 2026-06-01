@@ -21,3 +21,7 @@ test = ["pytest"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["."]
+
+[tool.setuptools.packages.find]
+include = ["zzopt*"]
+exclude = ["runs*", "tests*"]
