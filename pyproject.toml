@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "zzopt"
+version = "0.1.0"
+description = "Numerical search for Zhang-Zagier Doche-type upper bounds"
+requires-python = ">=3.10"
+dependencies = [
+  "mpmath",
+  "numpy",
+  "python-flint",
+  "scipy",
+  "sympy",
+]
+
+[project.optional-dependencies]
+test = ["pytest"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
