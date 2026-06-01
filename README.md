@@ -87,5 +87,5 @@ screening grid.
 
 ## Reference
 
-[Doc01b] C. Doche, "Minorations de hauteurs et petits degres", Journal de
-Theorie des Nombres de Bordeaux 13 (2001), no. 1, 103--110.
+[Doc01b] C. Doche, "Zhang-Zagier heights of perturbed polynomials", Journal
+de Theorie des Nombres de Bordeaux 13 (2001), no. 1, 103--110.
